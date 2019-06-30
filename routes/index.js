@@ -44,22 +44,40 @@ router.post('/searchTraces', (req, res) => {
 
 //获取文人轨迹数组函数
 function getTrace(i, poets,poetTraces,res){
-  traces.find({"作家":poets[i]},function (error,doc) {
-    if (error) {
-      console.log("Error!")
-    } else {
-      if(i < poets.length){
-        poetTraces.push(doc)
-        //console.log(i)
-        if(i == poets.length-1){
-          //console.log(poetTraces)
-          res.send(poetTraces)
+  // traces.find({"作家":poets[i]},function (error,doc) {
+  //   if (error) {
+  //     console.log("Error!")
+  //   } else {
+  //     if(i < poets.length){
+  //       poetTraces.push(doc)
+  //       //console.log(i)
+  //       if(i == poets.length-1){
+  //         //console.log(poetTraces)
+  //         res.send(poetTraces)
+  //       }
+  //       i++
+  //       getTrace(i, poets,poetTraces,res)
+  //     }
+  //   }
+  // })
+  traces.find({"作家":poets[i]})
+    .sort({年份:1})
+    .exec(function (error,doc) {
+      if(error){
+        console.error(error)
+      }else{
+        if(i < poets.length){
+          poetTraces.push(doc)
+          //console.log(i)
+          if(i == poets.length-1){
+            //console.log(poetTraces)
+            res.send(poetTraces)
+          }
+          i++
+          getTrace(i, poets,poetTraces,res)
         }
-        i++
-        getTrace(i, poets,poetTraces,res)
       }
-    }
-  })
+    })
 }
 
 //获取文人轨迹数组接口
